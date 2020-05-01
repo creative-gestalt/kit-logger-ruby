@@ -1,10 +1,4 @@
-# frozen_string_literal: true
-
-# rubocop:disable Naming/ClassAndModuleCamelCase
-# rubocop:disable Metrics/AbcSize
-
 module SingleCarePages
-  # This class abstracts the location page in single care
   class Location_Page < SCPage
 
     text 'zip_code', css('input#zip')
@@ -80,5 +74,3 @@ module SingleCarePages
 
   end
 end
-# rubocop:enable Naming/ClassAndModuleCamelCase
-# rubocop:enable Metrics/AbcSize
