@@ -1,0 +1,3 @@
+class Link < DOMElement
+
+end
