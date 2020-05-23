@@ -1,5 +1,5 @@
 require 'selenium-webdriver'
-require_relative '../../wait-until/wait-until'
+require_relative '../../../wait-until/wait-until'
 require_relative 'exceptions'
 require_relative 'elements/element'
 require_relative 'elements/files'

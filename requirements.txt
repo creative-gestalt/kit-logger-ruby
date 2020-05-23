@@ -1,0 +1,7 @@
+export == 0.1.2
+halo == 0.0.29
+python-telegram-bot == 12.4.2
+selenium == 3.141.0
+slackclient == 2.5.0
+slackeventsapi == 2.1.0
+websocket-client == 0.54.0

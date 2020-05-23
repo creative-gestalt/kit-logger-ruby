@@ -165,7 +165,7 @@ def get_kit_count(update, context):
        `box range` from user
     """
     global email, password, group_number, member_numbers
-    context.bot.send_message(chat_id=68162307, text='Logging %s kits at %s' % (kit_count, zip_code))
+    print('Logging %s kits at %s' % (kit_count, zip_code))
     credentials_file = Path('./Users/%s/ALL/extras/credentials.txt' % user)
     group_file = Path('./Users/%s/ALL/extras/group_number.txt' % user)
     member_file = Path('./Users/%s/ALL/extras/member_numbers.txt' % user)
@@ -246,6 +246,7 @@ def begin_logging(update, context):
        If a screenshot is created during a failure, this sends the image .png
        Ends conversation
     """
+    print('%s hit the log button' % user)
     results = []
     data = [user, zip_code, kit_count, local_zips]
     chat_id = update.message.chat.id

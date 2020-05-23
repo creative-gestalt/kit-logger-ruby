@@ -110,7 +110,7 @@ class SCTools
   def screenshot_path
     file_name = File.basename($PROGRAM_NAME).gsub('.rb', '')
     guid = rand(36**10).to_s(36)
-    ["C:/Users/npitts/github/kit-logger/data/screenshots/#{file_name}_#{guid}.png", "#{file_name}_#{guid}.png"]
+    ["C:/Users/npitts/github/kit-logger-ruby/data/screenshots/#{file_name}_#{guid}.png", "#{file_name}_#{guid}.png"]
   end
 
 end
@@ -132,7 +132,7 @@ at_exit do
           test.begin_clean_up
         rescue StandardError => e
           test.record_failure
-          puts ":warning>>  Warning - clean up failed. #{e} #{e.backtrace.join("\n")}<<:"
+          puts ":warning>>  Warning - clean up failed. #{e} #{e.backtrace.join("\n")} <<:"
         end
       end
       test.teardown

@@ -1,5 +1,5 @@
 require_relative 'singlecare_base'
-require_relative 'abstractor/page/page_name_translator'
+require_relative '../selenium-abstractor/abstractor/page/page_name_translator'
 require_relative 'do'
 require_relative 'pages/location_page'
 

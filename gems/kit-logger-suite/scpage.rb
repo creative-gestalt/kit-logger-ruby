@@ -1,4 +1,4 @@
-require_relative 'abstractor/page/page'
+require_relative '../selenium-abstractor/abstractor/page/page'
 
 class SCPage < Page
 

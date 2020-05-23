@@ -2,7 +2,7 @@ module SingleCarePages
   class LocationFactory
     include ElementFinder
 
-    def self.get_locations driver
+    def self.get_locations(driver)
       @driver = driver
       @locations = []
       find_locations
@@ -18,7 +18,7 @@ module SingleCarePages
       find_statuses
     end
 
-    def self.find_locations reattempt = 5
+    def self.find_locations(reattempt = 5)
       locations = @driver.send :find_matching_elements, 'css', "a[title='Edit practice']"
       locations.each do |loc|
         @locations.push(loc.attribute('innerHTML'))
@@ -30,7 +30,7 @@ module SingleCarePages
       end
     end
 
-    def self.find_links reattempt = 5
+    def self.find_links(reattempt = 5)
       links = @driver.send :find_matching_elements, 'css', "a[title='Edit practice']"
       links.each do |loc|
         @links.push(loc.attribute('href'))
@@ -42,7 +42,7 @@ module SingleCarePages
       end
     end
 
-    def self.find_statuses reattempt = 5
+    def self.find_statuses(reattempt = 5)
       statuses = @driver.send :find_matching_elements, 'css', "span[class^='locstatus']"
       statuses.each do |status|
         @statuses.push(status.attribute('innerHTML'))

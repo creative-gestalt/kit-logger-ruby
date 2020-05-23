@@ -1,4 +1,4 @@
-require_relative 'kit-logger-suite/classes/sctools'
+require_relative 'gems/kit-logger-suite/classes/sctools'
 
 class KitLogger < SCTools
 
@@ -34,7 +34,7 @@ class KitLogger < SCTools
         @sc.kit_page.drop_off_kits
         @sc.kit_page.set_group @group
         @sc.kit_page.set_member @member[0]
-        @sc.kit_page.close
+        @sc.kit_page.log_kit
         @member.delete_at(0)
         @kits_logged += 1
       end

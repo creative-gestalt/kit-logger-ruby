@@ -1,8 +1,8 @@
 require 'selenium-webdriver'
 require 'rautomation'
-require_relative 'wait-until/wait-until'
+require_relative '../wait-until/wait-until'
+require_relative '../selenium-abstractor/abstractor/selenium-abstractor'
 require_relative 'environment/environment'
-require_relative 'abstractor/selenium-abstractor'
 require_relative 'scpage'
 
 Dir["#{File.dirname(__FILE__)}/**/*.rb"].sort.each do |f|
@@ -20,7 +20,7 @@ class SingleCareBase
     options.add_argument('--disable-popup-blocking')
     options.add_argument('--disable-translate')
     options.add_argument('--log-level=3')
-    # options.add_argument('--headless')
+    options.add_argument('--headless')
 
     add_options_to_configuration(options, configuration)
 
