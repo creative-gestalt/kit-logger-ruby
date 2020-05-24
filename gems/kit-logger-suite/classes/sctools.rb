@@ -45,7 +45,7 @@ class SCTools
       file_name = payload[1]
       sc.driver.take_screenshot(path)
       File.open('data/temp/temp.txt', 'a') { |file| file.puts @kits_logged, (Time.new - @start_time).round, file_name }
-      File.write('Users/Nick/ALL/extras/member_numbers.txt', @member.join(''))
+      File.write("Users/#{@user.to_s}/ALL/extras/member_numbers.txt", @member.join(''))
       puts ":ws>> WebDriver Screenshot:{#{path}} <<:"
     rescue StandardError => e
       @screenshot_retry_times += 1
@@ -110,7 +110,7 @@ class SCTools
   def screenshot_path
     file_name = File.basename($PROGRAM_NAME).gsub('.rb', '')
     guid = rand(36**10).to_s(36)
-    ["C:/Users/npitts/github/kit-logger-ruby/data/screenshots/#{file_name}_#{guid}.png", "#{file_name}_#{guid}.png"]
+    %W[C:/Users/npitts/github/kit-logger-ruby/data/screenshots/#{file_name}_#{guid}.png #{file_name}_#{guid}.png]
   end
 
 end
