@@ -221,7 +221,7 @@ def get_group(update, context):
     group_path = Path('./Users/%s/ALL/extras/' % user)
     text = update.message.text
     group_number = text
-    update.message.reply_text('Send box range.\nExample:\n\n50015000 50015099')
+    update.message.reply_text('Send box range.\nExample:\n\n50015000-50015099')
     if not os.path.exists(group_path):
         os.makedirs(group_path)
     functions.write_to_file(group_file, group_number)
@@ -233,8 +233,11 @@ def generate_numbers(update, context):
     """Generates number range from user input"""
     global first_number, second_number, member_numbers
     text = update.message.text
-    (first_number, second_number) = text.split()
+    (first_number, second_number) = text.split('-')
     member_numbers = number_generator.generate_card_numbers(user, first_number, second_number)
+    if len(first_number) != len(second_number):
+        update.message.reply_text('You may have entered extra digits, please send them again.')
+        return GROUP
     update.message.reply_text('Member numbers were generated', reply_markup=log_button)
     return LOG
 
