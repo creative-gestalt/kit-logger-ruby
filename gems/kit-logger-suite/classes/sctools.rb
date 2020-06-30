@@ -110,7 +110,7 @@ class SCTools
   def screenshot_path
     file_name = File.basename($PROGRAM_NAME).gsub('.rb', '')
     guid = rand(36**10).to_s(36)
-    %W[C:/Users/npitts/github/kit-logger-ruby/data/screenshots/#{file_name}_#{guid}.png #{file_name}_#{guid}.png]
+    %W[C:/Users/thebb/github/kit-logger-ruby/data/screenshots/#{file_name}_#{guid}.png #{file_name}_#{guid}.png]
   end
 
 end

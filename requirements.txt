@@ -2,6 +2,9 @@ export == 0.1.2
 halo == 0.0.29
 python-telegram-bot == 12.4.2
 selenium == 3.141.0
-slackclient == 2.5.0
-slackeventsapi == 2.1.0
 websocket-client == 0.54.0
+pip~=19.2.3
+cryptography~=2.9.2
+urllib3~=1.25.9
+
+
