@@ -34,9 +34,7 @@ class SingleCareBase
 
   def create_driver(browser, configuration)
     @driver = Selenium::WebDriver::Abstractor.for browser, configuration
-    puts ":browser>> #{@driver.capabilities.browser_name.capitalize} <<:"
-    puts ":browser_version>> #{@driver.capabilities.version} <<:"
-    puts ":chromedriver_version>> #{@driver.capabilities['chrome']['chromedriverVersion']} <<:"
+    puts ":session>> STARTED <<:"
   end
 
   def add_options_to_configuration(chrome_options, configuration)

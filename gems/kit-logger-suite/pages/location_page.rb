@@ -14,7 +14,10 @@ module SingleCarePages
 
     def open_location(link)
       link 'location', css("a[href='#{link}']")
-      next_button unless location?
+      until location?
+        next_button
+        wait_until { !loader_icon_element.visible? }
+      end
       wait_until { !loader_icon_element.visible? }
       wait_until { location_element.visible? }
       location_element.send_keys %i[control enter]
@@ -31,6 +34,7 @@ module SingleCarePages
         unclaimed_indexes = filter_for_index(results[2], 'Unclaimed')
         unclaimed_indexes.each { |num| links.push(results[1][num][base_url.length..-1]) }
 
+        puts "#{links.length} unclaimed links found."
         break if links.length >= iterations || next_disabled_element.visible?
 
         next_button
@@ -59,6 +63,7 @@ module SingleCarePages
       zips = File.readlines(zips_path.to_s)
       zips.delete_at(zips.index { |s| s.include? zip_code })
       File.open(zips_path, 'w') { |file| file.puts zips }
+      puts "Location #{zip_code} was removed."
       wait_until { !next_disabled_element.visible? }
     end
 

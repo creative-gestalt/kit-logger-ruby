@@ -136,7 +136,6 @@ at_exit do
         end
       end
       test.teardown
-      puts ":ctime>> #{Time.now} <<:"
       puts ":result>> #{File.basename($PROGRAM_NAME, '.rb')} #{test.failed? ? 'failed' : 'passed'} <<:"
     end
   end

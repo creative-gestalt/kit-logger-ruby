@@ -150,3 +150,10 @@ def previous_and_next(some_iterable):
     prev = chain([None], prev)
     nex = chain(islice(nex, 1, None), [None])
     return zip(prev, items, nex)
+
+
+def execute_ruby_automation(command):
+    try:
+        os.system(command)
+    except:
+        pass

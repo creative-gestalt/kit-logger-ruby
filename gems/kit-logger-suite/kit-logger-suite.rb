@@ -1,5 +1,5 @@
-puts ":cname>> #{ENV['computername']} <<:"
-puts ":ctime>> #{Time.now} <<:"
+puts ":kit_logger>> #{ENV['computername']} <<:"
+puts ":time>> #{Time.now} <<:"
 require 'fileutils'
 require 'json'
 
