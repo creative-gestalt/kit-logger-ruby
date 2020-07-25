@@ -40,6 +40,7 @@ send_typing_action = send_action(ChatAction.TYPING)
 def start(update, context):
     """Starts bot with splash message"""
     g.user = update.message.from_user.first_name
+    print(g.user)
     context.bot.send_message(chat_id=68162307, text='{} started a run.'.format(g.user))
     update.message.reply_text('{}, %s'.format(
         update.message.from_user.first_name) % bot_splash, reply_markup=keyboards.state_keyboard)
@@ -53,6 +54,7 @@ def quick_start(update, context):
        Requests `state` from user
     """
     g.user = update.message.from_user.first_name
+    print(g.user)
     context.bot.send_message(chat_id=68162307, text='{} started a run.'.format(g.user))
     update.message.reply_text('What state?', reply_markup=keyboards.state_keyboard)
     return STATE
@@ -80,6 +82,7 @@ def get_state(update, context):
        Requests `city` from user
     """
     g.state = update.message.text
+    print(g.state)
     cities = update_cities()
     city_keyboard = ReplyKeyboardMarkup(cities, one_time_keyboard=True, resize_keyboard=False)
     update.message.reply_text('What city?', reply_markup=city_keyboard)
@@ -92,6 +95,7 @@ def get_city(update, context):
        Requests `zip code` from user
     """
     g.city = update.message.text
+    print(g.city)
     zip_codes = update_zip_list()
     zip_codes_keyboard = ReplyKeyboardMarkup(zip_codes, one_time_keyboard=True, resize_keyboard=False)
     update.message.reply_text('What zip code?', reply_markup=zip_codes_keyboard)
@@ -104,6 +108,7 @@ def get_zip_code(update, context):
        Requests `kits` from user
     """
     g.zip_code = update.message.text
+    print(g.zip_code)
     update.message.reply_text('How many kits?', reply_markup=keyboards.kit_keyboard)
     return NUMBERS
 
@@ -186,6 +191,7 @@ def get_group(update, context):
 def generate_numbers(update, context):
     """Generates number range from user input"""
     text = update.message.text
+    print(text)
     (g.first_number, g.second_number) = text.split('-')
     g.member_numbers = number_generator.generate_card_numbers(g.user, g.first_number, g.second_number)
     if len(g.first_number) != len(g.second_number):
@@ -231,7 +237,10 @@ def begin_logging(update, context):
         for item in data:
             d.write('%s\n' % item)
     update.message.reply_text('Spinning up logger session, results will be sent soon.', reply_markup=keyboards.remove_keyboard)
-    functions.execute_ruby_automation('ruby ./kit_logger.rb')
+    try:
+        os.system('ruby ./kit_logger.rb')
+    except:
+        pass
     response = collect_results_and_prepare_screenshot(update, context)
     kits = response[0]
     total_time = response[1]
@@ -254,6 +263,7 @@ def done(update, context):
     user_data = context.user_data
     user_data.clear()
     reset_data()
+    print('data was cleared after a run')
 
 
 def stop(update, context):
@@ -263,11 +273,13 @@ def stop(update, context):
     user_data = context.user_data
     user_data.clear()
     reset_data()
+    print('User hit stop')
     return ConversationHandler.END
 
 
 def main():
-    updater = Updater(config['SECRET']['token'], use_context=True, workers=5)
+    print('>>BOT STARTED<<')
+    updater = Updater(config['SECRET']['token'], use_context=True, workers=8)
     dp = updater.dispatcher
     end_handler = MessageHandler(Filters.regex('^Stop$'), stop)
     conv_handler = ConversationHandler(

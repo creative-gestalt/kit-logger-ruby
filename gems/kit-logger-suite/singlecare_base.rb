@@ -1,5 +1,4 @@
 require 'selenium-webdriver'
-require 'rautomation'
 require_relative '../wait-until/wait-until'
 require_relative '../selenium-abstractor/abstractor/selenium-abstractor'
 require_relative 'environment/environment'
@@ -44,20 +43,6 @@ class SingleCareBase
   def set_screenshot_path
     env['screenshot_path'] = "#{MasterControl.data_folder_path}/results/screenshots"
     FileUtils.mkdir_p(env['screenshot_path']) if Gem.win_platform?
-  end
-
-
-  def open_tab
-    activate_window
-    rautomation_window.send_keys [:left_control, 't']
-  end
-
-  def close_tab
-    rautomation_window.send_keys [:left_control, 'w']
-  end
-
-  def switch_main_tab
-    rautomation_window.send_keys [:left_control, "\t"]
   end
 
   def use_window(window)
@@ -109,10 +94,5 @@ class SingleCareBase
 
   def window_title
     @driver.window.title
-  end
-
-  def rautomation_window
-    title = @driver.window.title
-    RAutomation::Window.new(title: /#{Regexp.escape(title)}.*Chrom(?:e|ium)/)
   end
 end

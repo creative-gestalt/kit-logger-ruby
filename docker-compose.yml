@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  kit-logger:
+    container_name: kit-logger
+    build: .
+    volumes:
+    - './kit-files/:/etc/kit-files/'
+    tty: true
+    stdin_open: true

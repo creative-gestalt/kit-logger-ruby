@@ -1,11 +1,10 @@
 require "timeout"
-require "sourcify"
 #
 #The default timeout should be set in the environment variables
 #
 
 module Wait
-  @@default = 10
+  @@default = 30
 
   def default
     @@default

@@ -34,7 +34,7 @@ class KitLogger < SCTools
         @sc.kit_page.drop_off_kits
         @sc.kit_page.set_group @group
         @sc.kit_page.set_member @member[0]
-        @sc.kit_page.close # close -> debug :: log_kit -> live
+        @sc.kit_page.log_kit # close -> debug :: log_kit -> live
         @member.delete_at(0)
         @kits_logged += 1
       end
