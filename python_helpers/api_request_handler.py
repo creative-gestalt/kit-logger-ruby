@@ -9,6 +9,14 @@ headers = {
     'Cookie': '__RequestVerificationToken=XNPFrncou5bnM4eJQpQSRM0EPc8QUZa87DijvfAXacF_VJjYGfCTZMQrgmdhk9-emfWjNqSp4d70SjglivXIR8ZNxKoph9cg-oERJKwcKHc1'
 }
 
-result = req.request("POST", url, headers=headers, data=payload)
+result = req.request("POST", url, data=payload)
 
 print(result.text.encode('utf8'))
+
+
+def log_kits_api(location_ids, member_numbers, group_number, api_token, user_id):
+    print(location_ids)
+    print(member_numbers)
+    print(group_number)
+    print(api_token)
+    print(user_id)

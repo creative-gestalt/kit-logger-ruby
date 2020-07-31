@@ -19,7 +19,7 @@ class SCTools
   end
 
   def teardown
-    puts ":time>> Test run time: #{(Time.new - @start_time).round} seconds <<:" if @start_time
+    # puts ":time>> Test run time: #{(Time.new - @start_time).round} seconds <<:" if @start_time
     return unless @sc
 
     @sc.driver.quit
@@ -27,43 +27,18 @@ class SCTools
     puts "Note: Test 'teardown' failed. Exception: #{e} - #{e.message}"
   end
 
-  def take_screenshots
+  def save_data
     return unless @sc
 
-    take_wd_screenshot
+    save_data_to_file
   rescue StandardError => e
-    puts "Note: Failed when taking screenshots. Exception: #{e} - #{e.message}"
+    puts "Note: Failed when saving error to file"
   end
 
-  def take_wd_screenshot(sc = nil)
-    sc ||= @sc
-    return unless Gem.win_platform?
-
-    begin
-      payload = screenshot_path
-      path = payload[0]
-      file_name = payload[1]
-      sc.driver.take_screenshot(path)
-      File.open('data/temp/temp.txt', 'a') { |file| file.puts @kits_logged, (Time.new - @start_time).round, file_name }
-      File.write("Users/#{@user.to_s}/ALL/extras/member_numbers.txt", @member.join(''))
-      puts ":ws>> WebDriver Screenshot:{#{path}} <<:"
-    rescue StandardError => e
-      @screenshot_retry_times += 1
-      retry if e.class == NoMethodError && @screenshot_retry_times < 3
-    end
-  end
-
-  def take_screenshot(js_console: false)
-    return unless Gem.win_platform?
-
-    path = screenshot_path
-    saved_successfully = take_native_screenshot path, js_console: js_console
-    puts ":ns>> Native Screenshot:{#{path}} <<:" if saved_successfully
-  end
-
-  def warning(message)
-    take_screenshot
-    puts "\n\n:warning>> WARNING: #{message} <<:\n\n"
+  def save_data_to_file
+    File.open('data/used/used_location_ids.txt', 'a') { |file| file.puts @used_location_ids }
+    File.open('data/temp/temp.txt', 'a') { |file| file.puts @kits_logged, (Time.new - @start_time).round, @error }
+    File.write("Users/#{@user.to_s}/ALL/extras/member_numbers.txt", @member.join(''))
   end
 
   # Returns all object that has inherited Class.
@@ -76,43 +51,14 @@ class SCTools
   end
 
   def begin_clean_up
-    @original_sc_session_displaced_by_clean_up = @sc
-    @sc = @sc.open_second_session
-
     self.clean_up
   end
 
-  def record_failure
+  def record_event
     @failed = true
-    take_screenshots
+    save_data
+    # take_screenshots
   end
-
-  private
-
-  def open_js_console
-    @sc.driver._im_a_cheater_webdriver.find_element(tag_name: 'body').send_keys :control, :shift, 'j'
-    sleep 1.5
-  end
-
-  def take_native_screenshot(path, js_console: false)
-    require 'win32/screenshot'
-    open_js_console if js_console
-    take_screenshot_of_desktop path
-  end
-
-  def take_screenshot_of_desktop(path)
-    Win32::Screenshot::Take.of(:desktop).write(path)
-    true
-  rescue StandardError
-    false
-  end
-
-  def screenshot_path
-    file_name = File.basename($PROGRAM_NAME).gsub('.rb', '')
-    guid = rand(36**10).to_s(36)
-    %W[C:/Users/thebb/github/kit-logger-ruby/data/screenshots/#{file_name}_#{guid}.png #{file_name}_#{guid}.png]
-  end
-
 end
 
 at_exit do
@@ -124,14 +70,14 @@ at_exit do
       test.setup
       test.test_this
     rescue StandardError => e
-      test.record_failure
+      test.record_event
       raise e
     ensure
       if test.respond_to? :clean_up
         begin
           test.begin_clean_up
         rescue StandardError => e
-          test.record_failure
+          test.record_event
           puts ":warning>>  Warning - clean up failed. #{e} #{e.backtrace.join("\n")} <<:"
         end
       end

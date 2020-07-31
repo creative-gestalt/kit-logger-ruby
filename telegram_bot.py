@@ -19,28 +19,45 @@ with open('./bot-splash.txt', 'r') as f:
     bot_splash = f.read()
 
 
+def print_new(string):
+    os.system('cls')
+    print(string)
+
+
 def send_action(action):
     """Sends `action` while processing func command."""
-
     def decorator(func):
         @wraps(func)
         def command_func(update, context, *args, **kwargs):
             context.bot.send_chat_action(chat_id=update.effective_message.chat_id, action=action)
             return func(update, context, *args, **kwargs)
-
         return command_func
+    return decorator
 
+
+def busy_reply():
+    def decorator(func):
+        @wraps(func)
+        def command_func(update, context, *args, **kwargs):
+            if g.user is not None:
+                update.message.reply_text('Someone is using the logger, try again later.',
+                                          reply_markup=keyboards.quick_keyboard)
+                return ConversationHandler.END
+            return func(update, context, *args, **kwargs)
+        return command_func
     return decorator
 
 
 send_typing_action = send_action(ChatAction.TYPING)
+send_busy_reply = busy_reply()
 
 
+@send_busy_reply
 @send_typing_action
 def start(update, context):
     """Starts bot with splash message"""
     g.user = update.message.from_user.first_name
-    print(g.user)
+    print(g.user, flush=True)
     context.bot.send_message(chat_id=68162307, text='{} started a run.'.format(g.user))
     update.message.reply_text('{}, %s'.format(
         update.message.from_user.first_name) % bot_splash, reply_markup=keyboards.state_keyboard)
@@ -48,13 +65,14 @@ def start(update, context):
     return STATE  # <-- this is what will receive the next user input
 
 
+@send_busy_reply
 @send_typing_action
 def quick_start(update, context):
     """Starts bot the quick way
        Requests `state` from user
     """
     g.user = update.message.from_user.first_name
-    print(g.user)
+    print(g.user, flush=True)
     context.bot.send_message(chat_id=68162307, text='{} started a run.'.format(g.user))
     update.message.reply_text('What state?', reply_markup=keyboards.state_keyboard)
     return STATE
@@ -82,7 +100,6 @@ def get_state(update, context):
        Requests `city` from user
     """
     g.state = update.message.text
-    print(g.state)
     cities = update_cities()
     city_keyboard = ReplyKeyboardMarkup(cities, one_time_keyboard=True, resize_keyboard=False)
     update.message.reply_text('What city?', reply_markup=city_keyboard)
@@ -95,7 +112,6 @@ def get_city(update, context):
        Requests `zip code` from user
     """
     g.city = update.message.text
-    print(g.city)
     zip_codes = update_zip_list()
     zip_codes_keyboard = ReplyKeyboardMarkup(zip_codes, one_time_keyboard=True, resize_keyboard=False)
     update.message.reply_text('What zip code?', reply_markup=zip_codes_keyboard)
@@ -108,7 +124,6 @@ def get_zip_code(update, context):
        Requests `kits` from user
     """
     g.zip_code = update.message.text
-    print(g.zip_code)
     update.message.reply_text('How many kits?', reply_markup=keyboards.kit_keyboard)
     return NUMBERS
 
@@ -214,15 +229,8 @@ def collect_results_and_prepare_screenshot(update, context):
     kits = str(results[4].replace("\n", '')) + ' kits logged'
     time = int(results[5].replace("\n", ''))
     total_time = str(datetime.timedelta(seconds=time))
-    try:
-        screenshot_name = results[6].replace("\n", '')
-        screenshot = './data/screenshots/%s' % screenshot_name
-        context.bot.send_photo(chat_id=68162307, photo=open(screenshot, 'rb'))
-        context.bot.send_photo(chat_id=chat_id, photo=open(screenshot, 'rb'))
-        update.message.reply_text('A failure occurred, please review the screenshot.')
-    except:
-        pass
-    return kits, total_time
+    error = results[6].replace("\n", '')
+    return kits, total_time, error
 
 
 @send_typing_action
@@ -244,8 +252,9 @@ def begin_logging(update, context):
     response = collect_results_and_prepare_screenshot(update, context)
     kits = response[0]
     total_time = response[1]
-    update.message.reply_text('Results:\n%s\nTime: %s' % (kits, total_time), reply_markup=keyboards.quick_keyboard)
-    context.bot.send_message(chat_id=68162307, text='Results:\n%s\nTime: %s' % (kits, total_time))
+    error = response[2]
+    update.message.reply_text('Results:\n%s\nError: %s\nTime: %s' % (kits, error, total_time), reply_markup=keyboards.quick_keyboard)
+    context.bot.send_message(chat_id=68162307, text='Results:\n%s\nError: %s\nTime: %s' % (kits, error, total_time))
     done(update, context)
     return ConversationHandler.END
 
@@ -262,7 +271,11 @@ def done(update, context):
     update.message.reply_text('All session data was cleared, see you later!')
     user_data = context.user_data
     user_data.clear()
-    reset_data()
+    try:
+        reset_data()
+    except:
+        print('bitch died here')
+        pass
     print('data was cleared after a run')
 
 
@@ -283,6 +296,7 @@ def main():
     dp = updater.dispatcher
     end_handler = MessageHandler(Filters.regex('^Stop$'), stop)
     conv_handler = ConversationHandler(
+        conversation_timeout=5 * 60,
         entry_points=[CommandHandler('start', start), CommandHandler('qstart', quick_start)],
 
         states={
