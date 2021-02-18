@@ -64,7 +64,7 @@ module ElementFinder
       rescue Timeout::Error
       end
     end
-    raise MissingElementError,  "Unable to find '#{@by}' matching '#{@value}' in frame:'#{@frames.inspect}'" unless @elements.length > 0
+    raise MissingElementError, "Unable to find '#{@by}' matching '#{@value}' in frame:'#{@frames.inspect}'" unless @elements.length > 0
   end
 
   def send_not_stale_element
@@ -101,7 +101,7 @@ class NotStaleElement
     #If we get here, either we called a bad WebDriver method (unlikely in production)
     # or an element was stale, and now is missing. Which is a good thing because it means
     # an element that was stale has left for good.
-    raise MissingElementError,  "Element Stale - it was there, and now isn't. Unable to find '#{@a_element.by}' matching '#{@a_element.value}' in frame:'#{@a_element.frames.inspect}'"
+    raise MissingElementError, "Element Stale - it was there, and now isn't. Unable to find '#{@a_element.by}' matching '#{@a_element.value}' in frame:'#{@a_element.frames.inspect}'"
   end
 
   private

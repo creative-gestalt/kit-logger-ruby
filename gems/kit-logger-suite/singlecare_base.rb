@@ -41,7 +41,7 @@ class SingleCareBase
   end
 
   def set_screenshot_path
-    env['screenshot_path'] = "#{MasterControl.data_folder_path}/results/screenshots"
+    env['screenshot_path'] = "#{SingleCare.data_folder_path}/results/screenshots"
     FileUtils.mkdir_p(env['screenshot_path']) if Gem.win_platform?
   end
 
