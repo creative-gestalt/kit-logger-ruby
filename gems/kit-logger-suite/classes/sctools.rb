@@ -36,9 +36,9 @@ class SCTools
   end
 
   def save_data_to_file
-    File.open('data/used/used_location_ids.txt', 'a') { |file| file.puts @used_location_ids }
-    File.open('data/temp/temp.txt', 'a') { |file| file.puts @kits_logged, (Time.new - @start_time).round, @error }
-    File.write("Users/#{@user.to_s}/ALL/extras/member_numbers.txt", @member.join(''))
+    # File.open('data/used/used_location_ids.txt', 'a') { |file| file.puts @used_location_ids }
+    # File.open('data/temp/temp.txt', 'a') { |file| file.puts @kits_logged, (Time.new - @start_time).round, @error }
+    # File.write("Users/#{@user.to_s}/ALL/extras/member_numbers.txt", @member.join(''))
   end
 
   # Returns all object that has inherited Class.

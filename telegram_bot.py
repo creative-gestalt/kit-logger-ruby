@@ -1,7 +1,7 @@
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters, ConversationHandler)
 from telegram import ReplyKeyboardMarkup, ChatAction
-from python_helpers import functions, number_generator, keyboards
-from python_helpers import globals as g
+from python import functions, number_generator, keyboards
+from python import globals as g
 from functools import wraps
 from pathlib import Path
 import configparser
@@ -57,7 +57,7 @@ send_busy_reply = busy_reply()
 def start(update, context):
     """Starts bot with splash message"""
     g.user = update.message.from_user.first_name
-    print(g.user, flush=True)
+    print(g.user)
     context.bot.send_message(chat_id=68162307, text='{} started a run.'.format(g.user))
     update.message.reply_text('{}, %s'.format(
         update.message.from_user.first_name) % bot_splash, reply_markup=keyboards.state_keyboard)
@@ -217,7 +217,7 @@ def generate_numbers(update, context):
 
 
 @send_typing_action
-def collect_results_and_prepare_screenshot(update, context):
+def collect_results(update, context):
     """Creates the results message
        If a screenshot is created during a failure, this sends the image .png
     """
@@ -226,11 +226,14 @@ def collect_results_and_prepare_screenshot(update, context):
     with open('data/temp/temp.txt', 'r') as t:
         for line in t:
             results.append(line)
+    with open('data/temp/location_data.txt', 'r') as l:
+        location_data = l.read()
+
     kits = str(results[4].replace("\n", '')) + ' kits logged'
     time = int(results[5].replace("\n", ''))
     total_time = str(datetime.timedelta(seconds=time))
     error = results[6].replace("\n", '')
-    return kits, total_time, error
+    return kits, total_time, error, location_data
 
 
 @send_typing_action
@@ -244,16 +247,22 @@ def begin_logging(update, context):
     with open('data/temp/temp.txt', 'w') as d:
         for item in data:
             d.write('%s\n' % item)
-    update.message.reply_text('Spinning up logger session, results will be sent soon.', reply_markup=keyboards.remove_keyboard)
+    update.message.reply_text('Spinning up logger session, results will be sent soon.',
+                              reply_markup=keyboards.remove_keyboard)
     try:
         os.system('ruby ./kit_logger.rb')
     except:
         pass
-    response = collect_results_and_prepare_screenshot(update, context)
+    response = collect_results(update, context)
     kits = response[0]
     total_time = response[1]
     error = response[2]
-    update.message.reply_text('Results:\n%s\nError: %s\nTime: %s' % (kits, error, total_time), reply_markup=keyboards.quick_keyboard)
+    location_data = response[3]
+    if location_data is None:
+        print('problem here')
+    update.message.reply_text('Logger data:\n%s' % location_data)
+    update.message.reply_text('Results:\n%s\nError: %s\nTime: %s' % (kits, error, total_time),
+                              reply_markup=keyboards.quick_keyboard)
     context.bot.send_message(chat_id=68162307, text='Results:\n%s\nError: %s\nTime: %s' % (kits, error, total_time))
     done(update, context)
     return ConversationHandler.END
@@ -263,6 +272,7 @@ def reset_data():
     """Resets global variables and clears temp file"""
     g.reset_globals()
     open('data/temp/temp.txt', 'w').close()
+    open('data/temp/location_data.txt', 'w').close()
 
 
 def done(update, context):

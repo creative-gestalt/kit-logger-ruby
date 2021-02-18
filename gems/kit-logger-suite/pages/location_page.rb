@@ -77,6 +77,7 @@ module SingleCarePages
       if success == false
         puts error
       end
+      # success = true
       [success, error]
     end
 
