@@ -6,7 +6,10 @@ class ZipCodeFilter < SCTools
     arizona = 'data/zips/arizona_master_zips_only.txt'
     texas = 'data/zips/texas_master_zips_only.txt'
     utah = 'data/zips/utah_master_zips_only.txt'
-    @zip_codes = File.readlines(texas)
+    california = 'data/zips/california_master_zips_only.txt'
+    arizona_only_6_5_2021 = 'data/zips/arizona_master_zips_only_6_5_2021.txt'
+    texas_only_6_5_2021 = 'data/zips/texas_master_zips_only_6_5_2021.txt'
+    @zip_codes = File.readlines(texas_only_6_5_2021)
     user_info = File.readlines("Users/Nick/ALL/extras/credentials.txt")
     @username = user_info[0].strip
     @password = user_info[1].strip

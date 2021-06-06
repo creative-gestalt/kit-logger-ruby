@@ -49,8 +49,8 @@ module SingleCarePages
       end
       # Returns only the amount of locations we need
       if location_ids.first(iterations) == []
-        remove_location(zip_code)
-        # location_remover(zip_code) ### MAKE SURE THIS IS DEBUG ONLY ###
+        # remove_location(zip_code)
+        location_remover(zip_code) ### MAKE SURE THIS IS DEBUG ONLY ###
       else
         # puts "from method #{location_ids.length.to_s}"
         location_ids.first(iterations)
@@ -93,29 +93,33 @@ module SingleCarePages
     def location_remover(zip_code)
       arizona_master = 'data/zips/arizona_master_list.txt'
       arizona_only = 'data/zips/arizona_master_zips_only.txt'
+      arizona_only_6_5_2021 = 'data/zips/arizona_master_zips_only_6_5_2021.txt'
 
       texas_master = 'data/zips/texas_master_list.txt'
       texas_only = 'data/zips/texas_master_zips_only.txt'
+      texas_only_6_5_2021 = 'data/zips/texas_master_zips_only_6_5_2021.txt'
 
       utah_master = 'data/zips/utah_master_list.txt'
       utah_only = 'data/zips/utah_master_zips_only.txt'
 
-      @master_path = texas_master
-      @zips_only_path = texas_only
+      california_only = 'data/zips/california_master_zips_only.txt'
 
-      zips_master = File.readlines(@master_path.to_s)
+      # @master_path = texas_master
+      @zips_only_path = texas_only_6_5_2021
+
+      # zips_master = File.readlines(@master_path.to_s)
       zips_only = File.readlines(@zips_only_path.to_s)
-      begin
-        zips_master.delete_at(zips_master.index { |s| s.include? zip_code.to_s })
-      rescue
+      # begin
+      #   zips_master.delete_at(zips_master.index { |s| s.include? zip_code.to_s })
+      # rescue
         # ignore
-      end
+      # end
       begin
         zips_only.delete_at(zips_only.index { |s| s.include? zip_code.to_s })
       rescue
         # ignore
       end
-      File.open(@master_path, 'w') { |file| file.puts zips_master }
+      # File.open(@master_path, 'w') { |file| file.puts zips_master }
       File.open(@zips_only_path, 'w') { |file| file.puts zips_only }
       puts "Location #{zip_code} was removed."
     end
